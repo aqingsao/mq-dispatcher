@@ -1,4 +1,4 @@
-package com.thoughtworks.i1.androidpn;
+package com.thoughtworks.i1.mq;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
