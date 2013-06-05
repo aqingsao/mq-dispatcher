@@ -25,10 +25,11 @@ dependencies {
     compile "com.google.inject:guice:$guiceVersion"
     compile 'javax:javaee-api:7.0'
     compile 'org.apache.activemq:activemq-core:5.7.0'
+
+    compile files("src/main/webapp/WEB-INF/libs/guice-jms.jar")
 }
 
 //        GRADLE_OPTS='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005'
-
 idea {
     module {
         inheritOutputDirs = false
@@ -39,6 +40,7 @@ idea {
         excludeDirs += file("out")
     }
 }
+
 sourceSets {
     main {
         resources {

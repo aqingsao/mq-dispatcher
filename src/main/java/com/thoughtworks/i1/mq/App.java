@@ -10,12 +10,19 @@ import javax.jms.*;
 public class App {
 
     public static final String BROKER_URL = "tcp://localhost:61618/";
+    private static int topicIndex = 0;
 
     public static void main(String[] args) throws Exception {
-        thread(new HelloWorldProducer(1), true);
-        thread(new HelloWorldProducer(2), false);
-        thread(new HelloWorldConsumer(2), true);
-        thread(new HelloWorldConsumer(2), true);
+//        JmsService service = null;
+//        thread(new HelloWorldProducer(1), true);
+//        thread(new HelloWorldProducer(2), false);
+//        thread(new HelloWorldConsumer(2), true);
+//        thread(new HelloWorldConsumer(2), true);
+        int topicCount = 30;
+        int topicCountPerThread = 10000;
+        for (int i = 0; i < topicCount; i++) {
+            thread(new HelloWorldTopic(i, topicCountPerThread), false);
+        }
         Thread.sleep(1000);
     }
 
@@ -24,6 +31,59 @@ public class App {
         brokerThread.setDaemon(daemon);
         brokerThread.start();
     }
+
+    public static class HelloWorldTopic implements Runnable {
+
+
+        private int index;
+        private int topicCountPerThread;
+
+        public HelloWorldTopic(int index, int topicCountPerThread) {
+            this.index = index;
+            this.topicCountPerThread = topicCountPerThread;
+        }
+
+        public void run() {
+            try {
+                // Create a ConnectionFactory
+                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(BROKER_URL);
+
+                // Create a Connection
+                Connection connection = connectionFactory.createConnection();
+                connection.start();
+
+                // Create a Session
+                Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+                // Create the destination (Topic or Queue)
+                for (int i = 0; i < topicCountPerThread; i++) {
+                    String topic = "topic_" + index + "_" + i;
+                    Destination destination = session.createTopic(topic);
+
+                    // Create a MessageProducer from the Session to the Topic or Queue
+                    MessageProducer producer = session.createProducer(destination);
+                    producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+
+                    // Create a messages
+                    String text = "Hello world! From: " + Thread.currentThread().getName() + " : " + this.hashCode();
+                    TextMessage message = session.createTextMessage(text);
+
+                    // Tell the producer to send the message
+                    System.out.println("Sent message: "+ this.hashCode() + " : " + Thread.currentThread().getName() +" to: " + topic);
+                    producer.send(message);
+                }
+
+                // Clean up
+                session.close();
+                connection.close();
+            }
+            catch (Exception e) {
+                System.out.println("Caught: " + e);
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     public static class HelloWorldProducer implements Runnable {
 
@@ -62,8 +122,8 @@ public class App {
                 producer.send(message);
 
                 // Clean up
-//                session.close();
-//                connection.close();
+                session.close();
+                connection.close();
             }
             catch (Exception e) {
                 System.out.println("Caught: " + e);
@@ -103,9 +163,9 @@ public class App {
                 // Wait for a message
                 consumer.setMessageListener(this);
 
-//                consumer.close();
-//                session.close();
-//                connection.close();
+                consumer.close();
+                session.close();
+                connection.close();
             } catch (Exception e) {
                 System.out.println("Caught: " + e);
                 e.printStackTrace();
