@@ -4,14 +4,13 @@ import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jms.Message;
 import java.util.*;
 
-public class DispatcherService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DispatcherService.class);
+public class DeviceService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeviceService.class);
     private Map<String, List<String>> server2DeviceIds;
 
-    public DispatcherService() {
+    public DeviceService() {
         server2DeviceIds = new HashMap();
     }
 
@@ -38,10 +37,6 @@ public class DispatcherService {
             return Collections.EMPTY_LIST;
         }
         return server2DeviceIds.get(server);
-    }
-
-    public void onMessage(Message message) {
-        LOGGER.info("Receive message {1}", message);
     }
 
     public Optional<String> getServer(String deviceId) {
