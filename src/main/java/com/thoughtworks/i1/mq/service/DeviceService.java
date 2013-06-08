@@ -14,6 +14,7 @@ public class DeviceService {
         server2DeviceIds = new HashMap();
     }
 
+    // To declare that a device has connected to a server
     public void onConnected(String server, String deviceId) {
         LOGGER.info("Device {1} connected to server {2}", deviceId, server);
         for (Map.Entry<String, List<String>> entry : server2DeviceIds.entrySet()) {
@@ -30,6 +31,21 @@ public class DeviceService {
         }
         deviceIds.add(deviceId);
         LOGGER.info("Add device {1} from server {2}", deviceId, server);
+    }
+
+    // To declare that a device has disconnected from a server
+    public void onDisconnected(String server, String deviceId) {
+        LOGGER.info("Will disconnect deviceId {1} from server {2}", deviceId, server);
+        if (!server2DeviceIds.containsKey(server)) {
+            LOGGER.info("Cannot find server {1}", server);
+            return;
+        }
+        boolean remove = server2DeviceIds.get(server).remove(deviceId);
+        if (!remove) {
+            LOGGER.info("Server {1} does not contain deviceId {2}", server, deviceId);
+        } else {
+            LOGGER.info("DeviceId {1} has been disconnected from server {2}", deviceId, server);
+        }
     }
 
     public List<String> getDeviceIds(String server) {

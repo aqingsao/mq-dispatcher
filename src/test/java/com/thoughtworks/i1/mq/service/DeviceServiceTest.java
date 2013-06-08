@@ -63,4 +63,24 @@ public class DeviceServiceTest {
         assertThat(deviceService.getDeviceIds("1").get(0), is("11"));
         assertThat(deviceService.getDeviceIds("1").get(1), is("12"));
     }
+
+    @Test
+    public void onDisConnected_should_remove_deviceId_from_a_server() {
+        deviceService.onConnected("1", "11");
+        deviceService.onDisconnected("1", "11");
+        assertThat(deviceService.getDeviceIds("1").contains("11"), is(false));
+    }
+
+    @Test
+    public void onDisConnected_should_do_nothing_when_deviceId_is_not_connected_to_a_server() {
+        deviceService.onConnected("1", "12");
+        deviceService.onDisconnected("1", "11");
+        assertThat(deviceService.getDeviceIds("1").contains("11"), is(false));
+    }
+
+    @Test
+    public void onDisConnected_should_do_nothing_when_a_specific_server_does_not_exist() {
+        deviceService.onDisconnected("1", "11");
+        assertThat(deviceService.getDeviceIds("1").contains("11"), is(false));
+    }
 }
