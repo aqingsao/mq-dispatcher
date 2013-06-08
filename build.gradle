@@ -7,7 +7,11 @@ repositories {
     mavenLocal();
     mavenCentral()
     mavenRepo url: "https://code.lds.org/nexus/content/groups/main-repo";
-    mavenRepo url: "http://download.java.net/maven/2", artifactUrls: ["http://maven.springframework.org/milestone", "https://repository.jboss.org/nexus/content/groups/public/", "http://mvnrepository.com/artifact"]
+    mavenRepo url: "http://download.java.net/maven/2",
+            artifactUrls: ["http://maven.springframework.org/milestone",
+                    "https://repository.jboss.org/nexus/content/groups/public/",
+                    "http://mvnrepository.com/artifact",
+                    "https://oss.sonatype.org/content/groups/public"]
 }
 
 sourceCompatibility = '1.6'
@@ -21,15 +25,16 @@ dependencies {
     def jerseyVersion = '1.16'
     compile "com.sun.jersey:jersey-client:$jerseyVersion"
 
-    guiceVersion="3.0"
+    guiceVersion = "3.0"
     compile "com.google.inject:guice:$guiceVersion"
     compile 'javax:javaee-api:7.0'
     compile 'org.apache.activemq:activemq-core:5.7.0'
 
-    compile files("src/main/webapp/WEB-INF/libs/guice-jms.jar",
-            "src/main/webapp/WEB-INF/libs/i1-commons-0.1.0-SNAPSHOT.jar")
+    compile "com.thoughtworks.i1:i1-commons:0.1.0"
 
-    testCompile files("src/test/resources/libs/i1-test-commons-0.1.0-SNAPSHOT.jar")
+    compile files("src/main/webapp/WEB-INF/libs/guice-jms.jar")
+
+    testCompile "com.thoughtworks.i1:i1-test-commons:0.1.0"
 }
 
 //        GRADLE_OPTS='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005'
