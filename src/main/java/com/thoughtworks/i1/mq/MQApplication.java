@@ -1,17 +1,21 @@
 package com.thoughtworks.i1.mq;
 
 import com.google.common.collect.ImmutableList;
+import com.google.inject.AbstractModule;
 import com.google.inject.Module;
+import com.google.inject.Scopes;
 import com.thoughtworks.i1.commons.I1Application;
 import com.thoughtworks.i1.commons.config.Configuration;
 import com.thoughtworks.i1.commons.config.DatabaseConfiguration;
 import com.thoughtworks.i1.mq.jms.JmsModule;
+import com.thoughtworks.i1.mq.service.DeviceService;
+import com.thoughtworks.i1.mq.service.DispatchService;
+import com.thoughtworks.i1.mq.service.MessageService;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import javax.jms.ConnectionFactory;
 import java.util.Collection;
 
-public class MQApplication extends I1Application{
+public class MQApplication extends I1Application {
     @Override
     protected Configuration defaultConfiguration() {
         return Configuration.config()
@@ -23,15 +27,23 @@ public class MQApplication extends I1Application{
 
     @Override
     protected Collection<? extends Module> getCustomizedModules() {
-        String brokerUrl = "tcp://localhost:61618/";
+        String brokerUrl = "tcp://localhost:61618";
         String queue = "TEST.FOO";
 
-        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerUrl);
-        return ImmutableList.of(new JmsModule.Builder(connectionFactory, queue).transacted().buildModule());
+        return ImmutableList.of(new JmsModule.QueueBuilder(new ActiveMQConnectionFactory(brokerUrl), queue).transacted().build(), new MQModule());
     }
-
 
     public static void main(String[] args) throws Exception {
         new MQApplication().start(true);
+    }
+
+    public static class MQModule extends AbstractModule{
+        @Override
+        protected void configure() {
+            bind(MessageService.class).in(Scopes.SINGLETON);
+            bind(DispatchService.class).in(Scopes.SINGLETON);
+            bind(DeviceService.class).in(Scopes.SINGLETON);
+
+        }
     }
 }

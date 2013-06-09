@@ -1,6 +1,7 @@
 package com.thoughtworks.i1.mq.service;
 
 import com.google.common.base.Optional;
+import com.thoughtworks.i1.mq.jms.QueueReceiver;
 import org.apache.activemq.command.ActiveMQTextMessage;
 import org.junit.Before;
 import org.junit.Test;
