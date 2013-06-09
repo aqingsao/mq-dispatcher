@@ -12,6 +12,9 @@ public class QueueReceiver implements AutoCloseable{
     private Destination destination;
     private MessageProducer producer;
 
+    public QueueReceiver(){
+
+    }
     public void sendFailed(Message message) {
 
     }
