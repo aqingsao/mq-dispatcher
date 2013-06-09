@@ -32,7 +32,7 @@ dependencies {
 
     compile "com.thoughtworks.i1:i1-commons:0.1.0"
 
-    compile files("src/main/webapp/WEB-INF/libs/i1-guice-jms-0.1.0.jar")
+//    compile files("src/main/webapp/WEB-INF/libs/i1-guice-jms-0.1.0.jar")
 
     testCompile "com.thoughtworks.i1:i1-test-commons:0.1.0"
 }

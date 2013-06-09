@@ -21,6 +21,8 @@ public class MessageService {
         this.deviceService = deviceService;
         this.dispatchService = dispatchService;
         this.queueReceiver = queueReceiver;
+
+
     }
 
     public void onMessage(Message message) {

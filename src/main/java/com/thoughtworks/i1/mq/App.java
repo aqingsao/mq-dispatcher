@@ -52,8 +52,8 @@ public class App {
                 Connection connection = connectionFactory.createConnection();
                 connection.start();
 
-                // Create a Session
-                Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                // Create a Session, it's transacted, so acknowledge param is ignored
+                Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
 
                 // Create the destination (Topic or Queue)
                 for (int i = 0; i < topicCountPerThread; i++) {

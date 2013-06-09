@@ -5,6 +5,7 @@ import com.google.inject.Module;
 import com.thoughtworks.i1.commons.I1Application;
 import com.thoughtworks.i1.commons.config.Configuration;
 import com.thoughtworks.i1.commons.config.DatabaseConfiguration;
+import com.thoughtworks.i1.mq.jms.JmsModule;
 
 import java.util.Collection;
 
@@ -20,7 +21,8 @@ public class MQApplication extends I1Application{
 
     @Override
     protected Collection<? extends Module> getCustomizedModules() {
-        return ImmutableList.of();
+        Module module = new JmsModule.Builder().usingJNDI().queue("queue/ex").buildModule();
+        return ImmutableList.of(module);
     }
 
 
