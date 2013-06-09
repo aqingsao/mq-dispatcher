@@ -1,7 +1,6 @@
 package com.thoughtworks.i1.mq.service;
 
 import com.google.common.base.Optional;
-import com.thoughtworks.i1.commons.SystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,19 +14,19 @@ public class MessageService {
 
     private DeviceService deviceService;
     private DispatchService dispatchService;
-    private QueueService queueService;
+    private QueueReceiver queueReceiver;
 
     @Inject
-    public MessageService(DeviceService deviceService, DispatchService dispatchService, QueueService queueService) {
+    public MessageService(DeviceService deviceService, DispatchService dispatchService, QueueReceiver queueReceiver) {
         this.deviceService = deviceService;
         this.dispatchService = dispatchService;
-        this.queueService = queueService;
+        this.queueReceiver = queueReceiver;
     }
 
     public void onMessage(Message message) {
         boolean result = sendMessageTo(message);
         if (!result) {
-            queueService.sendFailed(message);
+            queueReceiver.sendFailed(message);
         }
     }
 

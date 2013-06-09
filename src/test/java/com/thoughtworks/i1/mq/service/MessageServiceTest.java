@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.jms.Message;
-import javax.jms.MessageNotWriteableException;
 
 import static org.mockito.Mockito.*;
 
@@ -15,15 +14,15 @@ public class MessageServiceTest {
     private MessageService messageService;
     private DeviceService deviceService;
     private DispatchService dispatchService;
-    private QueueService queueService;
+    private QueueReceiver queueReceiver;
 
     @Before
     public void before() {
         deviceService = mock(DeviceService.class);
         dispatchService = mock(DispatchService.class);
-        queueService = mock(QueueService.class);
+        queueReceiver = mock(QueueReceiver.class);
 
-        messageService = new MessageService(deviceService, dispatchService, queueService);
+        messageService = new MessageService(deviceService, dispatchService, queueReceiver);
     }
 
     @Test
@@ -37,7 +36,7 @@ public class MessageServiceTest {
         messageService.onMessage(message);
 
         verify(dispatchService, times(1)).sendMessage(message, server);
-        verify(queueService, times(0)).sendFailed(message);
+        verify(queueReceiver, times(0)).sendFailed(message);
     }
 
     @Test
@@ -50,7 +49,7 @@ public class MessageServiceTest {
 
         messageService.onMessage(message);
 
-        verify(queueService, times(1)).sendFailed(message);
+        verify(queueReceiver, times(1)).sendFailed(message);
     }
 
     @Test
@@ -62,7 +61,7 @@ public class MessageServiceTest {
         messageService.onMessage(message);
 
         verify(dispatchService, times(0)).sendMessage(any(Message.class), anyString());
-        verify(queueService, times(1)).sendFailed(message);
+        verify(queueReceiver, times(1)).sendFailed(message);
     }
 
     private ActiveMQTextMessage aTextMessage(String text, String deviceId) {
