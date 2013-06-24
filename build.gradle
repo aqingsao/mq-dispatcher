@@ -7,11 +7,11 @@ repositories {
     mavenLocal();
     mavenCentral()
     mavenRepo url: "https://code.lds.org/nexus/content/groups/main-repo";
+    mavenRepo url: "https://oss.sonatype.org/content/groups/public";
     mavenRepo url: "http://download.java.net/maven/2",
             artifactUrls: ["http://maven.springframework.org/milestone",
                     "https://repository.jboss.org/nexus/content/groups/public/",
-                    "http://mvnrepository.com/artifact",
-                    "https://oss.sonatype.org/content/groups/public"]
+                    "http://mvnrepository.com/artifact"]
 }
 
 sourceCompatibility = '1.6'
@@ -30,7 +30,7 @@ dependencies {
     compile 'javax:javaee-api:7.0'
     compile 'org.apache.activemq:activemq-core:5.7.0'
 
-    compile "com.thoughtworks.i1:i1-commons:0.1.0"
+    compile "com.thoughtworks.i1:i1-commons:0.1.1-SNAPSHOT"
 
 //    compile files("src/main/webapp/WEB-INF/libs/i1-guice-jms-0.1.0.jar")
 

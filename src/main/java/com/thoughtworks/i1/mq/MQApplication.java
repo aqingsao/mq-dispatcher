@@ -4,10 +4,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
+import com.google.inject.name.Names;
 import com.thoughtworks.i1.commons.I1Application;
 import com.thoughtworks.i1.commons.config.Configuration;
 import com.thoughtworks.i1.commons.config.DatabaseConfiguration;
-import com.thoughtworks.i1.mq.jms.JmsModule;
+import com.thoughtworks.i1.mq.jms.QueueReceiver;
 import com.thoughtworks.i1.mq.service.DeviceService;
 import com.thoughtworks.i1.mq.service.DispatchService;
 import com.thoughtworks.i1.mq.service.MessageService;
@@ -27,22 +28,25 @@ public class MQApplication extends I1Application {
 
     @Override
     protected Collection<? extends Module> getCustomizedModules() {
-        String brokerUrl = "tcp://localhost:61618";
-        String queue = "TEST.FOO";
-
-        return ImmutableList.of(new JmsModule.QueueBuilder(new ActiveMQConnectionFactory(brokerUrl), queue).transacted().build(), new MQModule());
+        return ImmutableList.of(new MQModule());
     }
 
     public static void main(String[] args) throws Exception {
         new MQApplication().start(true);
     }
 
-    public static class MQModule extends AbstractModule{
+    public static class MQModule extends AbstractModule {
         @Override
         protected void configure() {
             bind(MessageService.class).in(Scopes.SINGLETON);
             bind(DispatchService.class).in(Scopes.SINGLETON);
             bind(DeviceService.class).in(Scopes.SINGLETON);
+
+            String brokerUrl = "tcp://localhost:61618";
+            String queue = "TEST.FOO";
+
+            QueueReceiver queueReceiver = new QueueReceiver.QueueBuilder(new ActiveMQConnectionFactory(brokerUrl), queue).transacted().build();
+            bind(QueueReceiver.class).annotatedWith(Names.named(queue)).toInstance(queueReceiver);
 
         }
     }
