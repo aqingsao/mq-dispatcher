@@ -1,3 +1,10 @@
+.DS_Store
 .idea
 out
 *.iml
+*.ipr
+*.iws
+.idea
+.gradle
+logs
+build/

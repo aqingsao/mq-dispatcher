@@ -1,80 +1,19 @@
-apply plugin: 'idea'
-apply plugin: 'maven'
-apply plugin: 'war'
-apply plugin: 'jetty'
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'maven'
+    apply plugin: 'war'
+    apply plugin: 'jetty'
 
-repositories {
-    mavenLocal();
-    mavenCentral()
-    mavenRepo url: "https://code.lds.org/nexus/content/groups/main-repo";
-    mavenRepo url: "https://oss.sonatype.org/content/groups/public";
-    mavenRepo url: "http://download.java.net/maven/2",
-            artifactUrls: ["http://maven.springframework.org/milestone",
-                    "https://repository.jboss.org/nexus/content/groups/public/",
-                    "http://mvnrepository.com/artifact"]
-}
-
-sourceCompatibility = '1.6'
-
-dependencies {
-    def guavaVersion = '13.0.1'
-    compile "com.google.guava:guava:$guavaVersion"
-    compile 'javax.servlet:javax.servlet-api:3.0.1'
-    def jettyVersion = '9.0.0.M3'
-    compile "org.eclipse.jetty:jetty-servlet:$jettyVersion"
-    def jerseyVersion = '1.16'
-    compile "com.sun.jersey:jersey-client:$jerseyVersion"
-
-    guiceVersion = "3.0"
-    compile "com.google.inject:guice:$guiceVersion"
-    compile 'javax:javaee-api:7.0'
-    compile 'org.apache.activemq:activemq-core:5.7.0'
-
-    compile "com.thoughtworks.i1:i1-commons:0.1.1-SNAPSHOT"
-
-//    compile files("src/main/webapp/WEB-INF/libs/i1-guice-jms-0.1.0.jar")
-
-    testCompile "com.thoughtworks.i1:i1-test-commons:0.1.0"
-}
-
-//        GRADLE_OPTS='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005'
-idea {
-    module {
-        inheritOutputDirs = false
-        print project.name + " output dir: " + sourceSets.main.output.resourcesDir
-        outputDir = file("out")
-        testOutputDir = file("out")
-
-        excludeDirs += file("out")
-    }
-}
-
-sourceSets {
-    main {
-        resources {
-            srcDirs += 'src/main/webapp'
-        }
-    }
-}
-buildscript {
     repositories {
+        mavenLocal();
         mavenCentral()
+        mavenRepo url: "https://code.lds.org/nexus/content/groups/main-repo";
+        mavenRepo url: "https://oss.sonatype.org/content/groups/public";
+        mavenRepo url: "http://download.java.net/maven/2",
+                artifactUrls: ["http://maven.springframework.org/milestone",
+                        "https://repository.jboss.org/nexus/content/groups/public/",
+                        "http://mvnrepository.com/artifact"]
     }
 
-    dependencies {
-        classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
-    }
+    sourceCompatibility = '1.6'
 }
-
-apply plugin: 'fatjar'
-
-jar {
-    manifest {
-        attributes 'Main-Class': 'com.thoughtworks.socket.Main'
-    }
-}
-
-war {
-    baseName = "mq-dispatcher"
-}
-httpPort = 5120
